@@ -1,0 +1,55 @@
+apply plugin: 'com.android.library'
+ext {
+    bintrayRepo = 'maven'
+    bintrayName = 'GhostAdapter'
+
+    publishedGroupId = 'ir.coderz.ghostadapter'
+    libraryName = 'GhostAdapter'
+    artifact = 'GhostAdapter'
+
+    libraryDescription = 'Ghost Adapter for recyclerview'
+
+    siteUrl = 'https://github.com/sajadshokri/Core-Adapter'
+    gitUrl = 'https://github.com/sajadshokri/Core-Adapter'
+
+    libraryVersion = '0.2'
+
+    developerId = 'sajadshokri'
+    developerName = 'Sajad Shokri'
+    developerEmail = 's.shokri@karinaco.com'
+
+    licenseName = 'The MIT License (MIT)'
+    licenseUrl = 'https://rem.mit-license.org/license.txt'
+    allLicenses = ["MIT"]
+
+}
+android {
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
+
+    defaultConfig {
+        minSdkVersion 14
+        targetSdkVersion 25
+        versionCode 1
+        versionName "0.1 ALPHA"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+ext {
+    supportLibVersion = '25.3.0'
+}
+
+dependencies {
+    compile "com.android.support:recyclerview-v7:$supportLibVersion"
+}
+apply from: 'installv1.gradle'
+apply from: 'bintrayv1.gradle'
+
+//apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
+//apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'
+
