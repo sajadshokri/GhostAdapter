@@ -3,7 +3,7 @@
 
 
 ### add to project:
-`compile 'ir.coderz.ghostadapter:GhostAdapter:0.1@aar'`
+`compile 'ir.coderz.ghostadapter:GhostAdapter:0.2@aar'`
 
 
 ### Usage:
