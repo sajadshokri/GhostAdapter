@@ -46,12 +46,12 @@ public class GhostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         }
     }
 
-    private void bind( RecyclerView.ViewHolder holder, Object o) {
+    private void bind(RecyclerView.ViewHolder holder, Object o) {
         Class c = o.getClass();
         for (Method method : c.getMethods()) {
             if (method.isAnnotationPresent(Binder.class)) {
                 try {
-                    method.invoke(o,holder);
+                    method.invoke(o, holder);
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 } catch (InvocationTargetException e) {
@@ -102,7 +102,7 @@ public class GhostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        bind(holder,items.get(position));
+        bind(holder, items.get(position));
 //        items.get(position).bind(holder);
     }
 
@@ -119,7 +119,7 @@ public class GhostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     /**
      * @param items GhostAdapter uses these items and bind recycler to them
      */
-    public <T > void setItems(@NonNull List<T> items) {
+    public <T> void setItems(@NonNull List<T> items) {
         this.items.clear();
         this.items.addAll(items);
         for (T item : items) {
@@ -136,7 +136,6 @@ public class GhostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     /**
      * @param items
      * @param <T>
-     *
      */
     public <T> void addItems(@NonNull List<T> items) {
         int start = this.items.size() - 1;
@@ -197,8 +196,10 @@ public class GhostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         if (start < items.size() && end <= items.size()) {
 
-            for (int i = start; i < end; i++) {
-                items.remove(i);
+            int count = end - start;
+            for (int j = 0; j < count; j++) {
+                items.remove(start);
+
             }
             notifyDataSetChanged();
 
