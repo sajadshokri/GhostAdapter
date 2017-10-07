@@ -151,7 +151,7 @@ public class GhostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     public <T> void addItems(@IntRange(from = 0) int position, @NonNull List<T> items) {
-        if (position > items.size()) {
+        if (position > this.items.size()) {
             throw new IndexOutOfBoundsException();
         }
         this.items.addAll(position, items);
