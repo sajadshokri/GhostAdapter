@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements AnotherItem.OnIte
         coreAdapter.addItems(coreItems);
 
         coreAdapter.removeItemRange(8,coreAdapter.getItemCount()-3);
+
     }
 
     @Override

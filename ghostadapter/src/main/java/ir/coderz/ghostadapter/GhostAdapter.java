@@ -12,8 +12,12 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
+import java.util.Vector;
 
 /**
  * Created by sajad on 6/30/16.
@@ -168,7 +172,6 @@ public class GhostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public <T> void addItem(@NonNull T item) {
         items.add(item);
         readAnnotations(item.getClass());
-
         notifyItemInserted(items.size() - 1);
     }
 
@@ -212,6 +215,9 @@ public class GhostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
      *
      * @param position insert position
      * @param item     input item
+     *
+     * @exception IndexOutOfBoundsException
+     * position > list size
      */
     public <T> void addItem(@IntRange(from = 0) int position, @NonNull T item) {
         if (position > items.size()) {
@@ -222,4 +228,163 @@ public class GhostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         notifyItemInserted(position);
     }
+
+
+
+
+    /**
+     * gettin all items
+     *
+     */
+    public <T> List<Object> getItems() {
+        return items;
+    }
+
+
+    /**
+     * getting an item from a position
+     *
+     * @param position insert position
+     *
+     * @exception IndexOutOfBoundsException
+     * position > list size
+     */
+    public <T> Object getItem(@IntRange(from = 0) int position) {
+        if (position > items.size()) {
+            throw new IndexOutOfBoundsException();
+        }
+        return items.get(position);
+    }
+
+    /**
+     * getting items from a specified position to the end of list
+     *
+     * @param position start position
+     *
+     * @exception IndexOutOfBoundsException
+     * position > list size
+     */
+    public <T> Object getItems(@IntRange(from = 0) int position) {
+        if (position > items.size()) {
+            throw new IndexOutOfBoundsException();
+        }
+        List temp = new ArrayList();
+        for (int i = 0; i < items.size(); i++)
+            //noinspection unchecked
+            temp.add(items.get(i));
+        return temp;
+    }
+
+
+    /**
+     * getting items from a specified position to the end of list
+     *
+     * @param beginPosition start position
+     * @param endPosition stop position
+     *
+     *
+     * @exception IndexOutOfBoundsException
+     * position > list size Or position < 0 Or start postion be grater than end position
+     */
+    public <T> Object getItems(@IntRange(from = 0) int beginPosition,@IntRange(from = 0) int endPosition) {
+        if (endPosition > items.size() || beginPosition < 0 || beginPosition > endPosition ) {
+            throw new IndexOutOfBoundsException();
+        }
+        List temp = new ArrayList();
+        for (int i = beginPosition; i < endPosition + 1; i++)
+            //noinspection unchecked
+            temp.add(items.get(i));
+        return temp;
+    }
+
+    /**
+     * check if list has any item or not
+     * @return True   if list has no item
+     * @return False  if any item exist
+     *
+     */
+    public boolean isEmpty() {
+        if(items.size() > -1)
+            return false;
+        return true;
+    }
+
+
+    /**
+     * @return the iterator of list
+     *
+     *
+     */
+    @NonNull
+    public Iterator iterator() {
+        return items.iterator();
+    }
+
+
+    /**
+     * @return an array of list
+     *
+     */
+    @NonNull
+    public Object[] toArray() {
+        return items.toArray();
+    }
+
+
+    public boolean retainAll(@NonNull Collection collection) {
+        return items.retainAll(collection);
+    }
+
+
+
+    /**
+     * check if object exists in list or not
+     *
+     * @param o
+     * object for search the list
+     *
+     * @return True   if list has o
+     * @return False  if o item does not exist
+     *
+     */
+    public boolean contains(Object o) {
+        return items.contains(o);
+    }
+
+
+    /**
+     * check an collection of objects are exist in list
+     *
+     * @param collection
+     */
+    public boolean containsAll(@NonNull Collection collection) {
+        return items.containsAll(collection);
+    }
+
+
+    /**
+     * getting items from a specified position to the end of list
+     *
+     * @param o
+     * object for search the list
+     * @return
+     * index of o object if it exist on list
+     * -1 will be returned if no  situation
+     *
+     *
+     */
+    public int indexOf(Object o) {
+        int size = items.size();
+        if (o == null) {
+            for (int i = 0; i < size; i++)
+                if (items.get(i) == null)
+                    return i;
+        } else {
+            for (int i = 0; i < size; i++)
+                if (o.equals(items.get(i)))
+                    return i;
+        }
+        return -1;
+    }
+
 }
