@@ -237,7 +237,10 @@ public class GhostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
      *
      */
     public <T> List<Object> getItems() {
-        return items;
+
+        if(items.size() > 0)
+            return items;
+        return null;
     }
 
 
@@ -304,9 +307,7 @@ public class GhostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
      *
      */
     public boolean isEmpty() {
-        if(items.size() > -1)
-            return false;
-        return true;
+        return items.isEmpty();
     }
 
 
@@ -347,7 +348,7 @@ public class GhostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
      * @return False  if o item does not exist
      *
      */
-    public boolean contains(Object o) {
+    public boolean contains(@NonNull Object o) {
         return items.contains(o);
     }
 
@@ -373,18 +374,8 @@ public class GhostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
      *
      *
      */
-    public int indexOf(Object o) {
-        int size = items.size();
-        if (o == null) {
-            for (int i = 0; i < size; i++)
-                if (items.get(i) == null)
-                    return i;
-        } else {
-            for (int i = 0; i < size; i++)
-                if (o.equals(items.get(i)))
-                    return i;
-        }
-        return -1;
+    public int indexOf(@NonNull Object o) {
+        return items.indexOf(o);
     }
 
 }
