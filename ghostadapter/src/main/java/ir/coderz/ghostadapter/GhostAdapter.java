@@ -1,5 +1,8 @@
 package ir.coderz.ghostadapter;
 
+import android.databinding.DataBindingComponent;
+import android.databinding.DataBindingUtil;
+import android.databinding.ViewDataBinding;
 import android.support.annotation.IntRange;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
@@ -87,9 +90,11 @@ public class GhostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     "No ViewType is specified." +
                             "call putViewType before using adapter");
         }
-        View view = layoutInflater.inflate(viewType, parent, false);
+//        View view = layoutInflater.inflate(viewType, parent, false);
+        ViewDataBinding viewDataBinding = DataBindingUtil.inflate(layoutInflater , viewType , parent , false);
+
         try {
-            return viewTypes.get(viewType).getConstructor(View.class).newInstance(view);
+            return viewTypes.get(viewType).getConstructor(ViewDataBinding.class).newInstance(viewDataBinding);
         } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {

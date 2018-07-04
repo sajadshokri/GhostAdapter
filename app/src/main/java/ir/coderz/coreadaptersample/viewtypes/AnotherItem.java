@@ -21,8 +21,8 @@ public class AnotherItem {
 
     @Binder
     public void bind(AnotherHolder viewHolder) {
-        viewHolder.getText().setText(anotherModel.getText() + " " + anotherModel.getMessage());
-        viewHolder.getButton().setOnClickListener(new View.OnClickListener() {
+        viewHolder.binding.text.setText(anotherModel.getText() + " " + anotherModel.getMessage());
+        viewHolder.binding.button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (onItemClickListener != null) {

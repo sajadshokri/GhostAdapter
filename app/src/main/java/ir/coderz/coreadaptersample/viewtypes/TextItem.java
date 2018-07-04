@@ -14,7 +14,8 @@ public class TextItem {
     @Binder
     public void bind(TextHolder textHolder) {
         this.textHolder = textHolder;
-        this.textHolder.getTextView().setText(textHolder.getAdapterPosition() + "");
+//        this.textHolder.getTextView().setText(textHolder.getAdapterPosition() + "");
+        textHolder.binding.text.setText(textHolder.getAdapterPosition() + "");
     }
 //
 //    @Override
