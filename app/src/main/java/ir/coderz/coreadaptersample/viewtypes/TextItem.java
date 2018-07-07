@@ -7,7 +7,7 @@ import ir.coderz.coreadaptersample.R;
 /**
  * Created by sajad on 6/30/16.
  */
-@BindItem(layout = R.layout.text_item, holder = TextHolder.class)
+@BindItem(layout = R.layout.text_item, holder = TextHolder.class , binding = true)
 public class TextItem {
     private TextHolder textHolder;
 
