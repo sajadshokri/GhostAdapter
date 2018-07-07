@@ -7,14 +7,15 @@ import ir.coderz.coreadaptersample.R;
 /**
  * Created by sajad on 6/30/16.
  */
-@BindItem(layout = R.layout.text_item, holder = TextHolder.class)
+@BindItem(layout = R.layout.text_item, holder = TextHolder.class , binding = true)
 public class TextItem {
     private TextHolder textHolder;
 
     @Binder
     public void bind(TextHolder textHolder) {
         this.textHolder = textHolder;
-        this.textHolder.getTextView().setText(textHolder.getAdapterPosition() + "");
+//        this.textHolder.getTextView().setText(textHolder.getAdapterPosition() + "");
+        textHolder.binding.text.setText(textHolder.getAdapterPosition() + "");
     }
 //
 //    @Override

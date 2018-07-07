@@ -19,5 +19,6 @@ public @interface BindItem {
 
     Class holder() default RecyclerView.ViewHolder.class;
 
-//    Class model() default String.class;
+    //    Class model() default String.class;
+    boolean binding() default false;
 }

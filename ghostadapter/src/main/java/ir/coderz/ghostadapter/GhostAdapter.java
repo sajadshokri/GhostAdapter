@@ -1,5 +1,7 @@
 package ir.coderz.ghostadapter;
 
+import android.databinding.DataBindingUtil;
+import android.databinding.ViewDataBinding;
 import android.support.annotation.IntRange;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
@@ -11,20 +13,20 @@ import android.view.ViewGroup;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
-import java.util.Vector;
+import java.util.Map;
 
 /**
  * Created by sajad on 6/30/16.
  */
 public class GhostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     List<Object> items = new ArrayList<>();
-    HashMap<Integer, Class<? extends RecyclerView.ViewHolder>> viewTypes = new HashMap<>();
+    HashMap<Integer, Map.Entry<Class<? extends RecyclerView.ViewHolder>, Boolean>> viewTypes = new HashMap<>();
     private LayoutInflater layoutInflater;
 
 //    public GhostAdapter(final HashMap<Integer, Class<? extends RecyclerView.ViewHolder>> viewTypes) {
@@ -35,7 +37,7 @@ public class GhostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private void readAnnotations(AnnotatedElement element) {
         if (element.isAnnotationPresent(BindItem.class)) {
             BindItem bindItem = element.getAnnotation(BindItem.class);
-            putViewType(bindItem.layout(), bindItem.holder());
+            putViewType(bindItem.layout(), bindItem.holder(), bindItem.binding());
         } else {
             throw new IllegalStateException("items should be annotated with BindItem");
         }
@@ -73,9 +75,11 @@ public class GhostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public GhostAdapter() {
     }
 
-    public void putViewType(@LayoutRes int layout, Class<? extends RecyclerView.ViewHolder> holder) {
-        this.viewTypes.put(layout, holder);
+    public void putViewType(@LayoutRes int layout, Class<? extends RecyclerView.ViewHolder> holder, Boolean binding) {
+        this.viewTypes.put(layout,
+                new AbstractMap.SimpleEntry<Class<? extends RecyclerView.ViewHolder>, Boolean>(holder, binding));
     }
+
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -87,9 +91,15 @@ public class GhostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     "No ViewType is specified." +
                             "call putViewType before using adapter");
         }
-        View view = layoutInflater.inflate(viewType, parent, false);
+
         try {
-            return viewTypes.get(viewType).getConstructor(View.class).newInstance(view);
+            if (viewTypes.get(viewType).getValue()) {
+                ViewDataBinding viewDataBinding = DataBindingUtil.inflate(layoutInflater, viewType, parent, false);
+                return viewTypes.get(viewType).getKey().getConstructor(ViewDataBinding.class).newInstance(viewDataBinding);
+            } else {
+                View view = layoutInflater.inflate(viewType, parent, false);
+                return viewTypes.get(viewType).getKey().getConstructor(View.class).newInstance(view);
+            }
         } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
@@ -215,9 +225,7 @@ public class GhostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
      *
      * @param position insert position
      * @param item     input item
-     *
-     * @exception IndexOutOfBoundsException
-     * position > list size
+     * @throws IndexOutOfBoundsException position > list size
      */
     public <T> void addItem(@IntRange(from = 0) int position, @NonNull T item) {
         if (position > items.size()) {
@@ -230,15 +238,12 @@ public class GhostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
 
-
-
     /**
      * gettin all items
-     *
      */
     public <T> List<Object> getItems() {
 
-        if(items.size() > 0)
+        if (items.size() > 0)
             return items;
         return null;
     }
@@ -248,9 +253,7 @@ public class GhostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
      * getting an item from a position
      *
      * @param position insert position
-     *
-     * @exception IndexOutOfBoundsException
-     * position > list size
+     * @throws IndexOutOfBoundsException position > list size
      */
     public <T> Object getItem(@IntRange(from = 0) int position) {
         if (position > items.size()) {
@@ -263,9 +266,7 @@ public class GhostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
      * getting items from a specified position to the end of list
      *
      * @param position start position
-     *
-     * @exception IndexOutOfBoundsException
-     * position > list size
+     * @throws IndexOutOfBoundsException position > list size
      */
     public <T> Object getItems(@IntRange(from = 0) int position) {
         if (position > items.size()) {
@@ -283,14 +284,11 @@ public class GhostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
      * getting items from a specified position to the end of list
      *
      * @param beginPosition start position
-     * @param endPosition stop position
-     *
-     *
-     * @exception IndexOutOfBoundsException
-     * position > list size Or position < 0 Or start postion be grater than end position
+     * @param endPosition   stop position
+     * @throws IndexOutOfBoundsException position > list size Or position < 0 Or start postion be grater than end position
      */
-    public <T> Object getItems(@IntRange(from = 0) int beginPosition,@IntRange(from = 0) int endPosition) {
-        if (endPosition > items.size() || beginPosition < 0 || beginPosition > endPosition ) {
+    public <T> Object getItems(@IntRange(from = 0) int beginPosition, @IntRange(from = 0) int endPosition) {
+        if (endPosition > items.size() || beginPosition < 0 || beginPosition > endPosition) {
             throw new IndexOutOfBoundsException();
         }
         List temp = new ArrayList();
@@ -302,9 +300,8 @@ public class GhostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     /**
      * check if list has any item or not
-     * @return True   if list has no item
-     * @return False  if any item exist
      *
+     * @return False  if any item exist
      */
     public boolean isEmpty() {
         return items.isEmpty();
@@ -313,8 +310,6 @@ public class GhostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     /**
      * @return the iterator of list
-     *
-     *
      */
     @NonNull
     public Iterator iterator() {
@@ -324,7 +319,6 @@ public class GhostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     /**
      * @return an array of list
-     *
      */
     @NonNull
     public Object[] toArray() {
@@ -337,16 +331,11 @@ public class GhostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
 
-
     /**
      * check if object exists in list or not
      *
-     * @param o
-     * object for search the list
-     *
-     * @return True   if list has o
+     * @param o object for search the list
      * @return False  if o item does not exist
-     *
      */
     public boolean contains(@NonNull Object o) {
         return items.contains(o);
@@ -366,13 +355,9 @@ public class GhostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     /**
      * getting items from a specified position to the end of list
      *
-     * @param o
-     * object for search the list
-     * @return
-     * index of o object if it exist on list
+     * @param o object for search the list
+     * @return index of o object if it exist on list
      * -1 will be returned if no  situation
-     *
-     *
      */
     public int indexOf(@NonNull Object o) {
         return items.indexOf(o);

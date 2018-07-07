@@ -11,14 +11,13 @@ import ir.coderz.coreadaptersample.R;
  * Created by sajad on 6/30/16.
  */
 public class AnotherHolder extends RecyclerView.ViewHolder {
-
     private final Button button;
     private final TextView text;
 
     public AnotherHolder(View itemView) {
         super(itemView);
-        text = (TextView) itemView.findViewById(R.id.text);
-        button = (Button) itemView.findViewById(R.id.button);
+        button = itemView.findViewById(R.id.button);
+        text = itemView.findViewById(R.id.text);
     }
 
     public Button getButton() {
