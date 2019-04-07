@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Multi Adapter Sample</string>
+    <string name="click_me">click me</string>
 </resources>

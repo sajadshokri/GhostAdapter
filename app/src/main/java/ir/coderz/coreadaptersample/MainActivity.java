@@ -1,37 +1,34 @@
 package ir.coderz.coreadaptersample;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import ir.coderz.ghostadapter.GhostAdapter;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import ir.coderz.coreadaptersample.databinding.ActivityMainBinding;
 import ir.coderz.coreadaptersample.viewtypes.AnotherItem;
 import ir.coderz.coreadaptersample.viewtypes.TextItem;
+import ir.coderz.ghostadapter.GhostAdapter;
 
 public class MainActivity extends AppCompatActivity implements AnotherItem.OnItemClickListener {
 
-    RecyclerView recycler;
+    private ActivityMainBinding binding;
+
     GhostAdapter coreAdapter = new GhostAdapter();
     List<Object> coreItems = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        recycler = (RecyclerView) findViewById(R.id.recycler);
-        recycler.setLayoutManager(new LinearLayoutManager(this));
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
-//        coreAdapter.putViewType(R.layout.text_item, TextHolder.class);
-//        coreAdapter.putViewType(R.layout.another_layout, AnotherHolder.class);
-
-        recycler.setAdapter(coreAdapter);
-
+        binding.recycler.setLayoutManager(new LinearLayoutManager(this));
+        binding.recycler.setAdapter(coreAdapter);
 
         int x = 30;
         for (int i = 0; i < x; i++) {
@@ -44,10 +41,9 @@ public class MainActivity extends AppCompatActivity implements AnotherItem.OnIte
 
             }
         }
+
         coreAdapter.addItems(coreItems);
-
-        coreAdapter.removeItemRange(8,coreAdapter.getItemCount()-3);
-
+        coreAdapter.removeItemRange(8, coreAdapter.getItemCount() - 3);
     }
 
     @Override

@@ -1,7 +1,7 @@
 package ir.coderz.ghostadapter;
 
-import android.support.annotation.LayoutRes;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.LayoutRes;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -19,5 +19,5 @@ public @interface BindItem {
 
     Class holder() default RecyclerView.ViewHolder.class;
 
-//    Class model() default String.class;
+    Class binding() default androidx.databinding.ViewDataBinding.class;
 }
