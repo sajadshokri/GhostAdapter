@@ -1,5 +1,6 @@
 package ir.coderz.ghostadapter;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,6 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.IntRange;
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ViewDataBinding;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,8 +25,9 @@ import java.util.List;
 /**
  * Created by sajad on 6/30/16.
  */
-public class GhostAdapter extends RecyclerView.Adapter<GhostViewHolder> {
+public class GhostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     List<Object> items = new ArrayList<>();
+    @SuppressLint("UseSparseArrays")
     HashMap<Integer, ViewHolderBindingModel> viewTypes = new HashMap<>();
     private LayoutInflater layoutInflater;
 
@@ -46,12 +49,31 @@ public class GhostAdapter extends RecyclerView.Adapter<GhostViewHolder> {
         }
     }
 
+    private void bind(RecyclerView.ViewHolder holder, Object o) {
+        Class c = o.getClass();
+        for (Method method : c.getMethods()) {
+            if (method.isAnnotationPresent(Binder.class)) {
+                try {
+                    method.invoke(o, holder);
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
     private void bind(GhostViewHolder holder, ViewDataBinding binding, Object o) {
         Class c = o.getClass();
         for (Method method : c.getMethods()) {
             if (method.isAnnotationPresent(Binder.class)) {
                 try {
-                    method.invoke(o, holder, binding);
+                    if (binding == null || !(binding instanceof ViewDataBinding)) {
+                        method.invoke(o, holder);
+                    } else {
+                        method.invoke(o, holder, binding);
+                    }
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 } catch (InvocationTargetException e) {
@@ -69,7 +91,8 @@ public class GhostAdapter extends RecyclerView.Adapter<GhostViewHolder> {
     }
 
     @Override
-    public GhostViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    @Nullable
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (layoutInflater == null) {
             layoutInflater = LayoutInflater.from(parent.getContext());
         }
@@ -81,6 +104,11 @@ public class GhostAdapter extends RecyclerView.Adapter<GhostViewHolder> {
         }
 
         try {
+            if (viewTypes.get(viewType).binding.equals(Void.TYPE)) {
+                View view = layoutInflater.inflate(viewType, parent, false);
+                return viewTypes.get(viewType).holder.getConstructor(View.class).newInstance(view);
+            }
+
             ViewDataBinding binding = DataBindingUtil.inflate(layoutInflater, viewType, parent, false);
             GhostViewHolder ghostViewHolder = viewTypes.get(viewType).holder.getConstructor(View.class).newInstance(binding.getRoot());
             ghostViewHolder.binding = binding;
@@ -98,12 +126,17 @@ public class GhostAdapter extends RecyclerView.Adapter<GhostViewHolder> {
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
+
         return null;
     }
 
     @Override
-    public void onBindViewHolder(GhostViewHolder holder, int position) {
-        bind(holder, holder.binding, items.get(position));
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        if (holder instanceof GhostViewHolder) {
+            bind(((GhostViewHolder) holder), ((GhostViewHolder) holder).binding, items.get(position));
+        } else {
+            bind(holder, items.get(position));
+        }
     }
 
     @Override
@@ -113,7 +146,7 @@ public class GhostAdapter extends RecyclerView.Adapter<GhostViewHolder> {
 
     @Override
     public int getItemViewType(int position) {
-        return readLayout(items.get(position).getClass());//.getLayout();
+        return readLayout(items.get(position).getClass());
     }
 
     /**

@@ -19,5 +19,5 @@ public @interface BindItem {
 
     Class holder() default RecyclerView.ViewHolder.class;
 
-    Class binding() default androidx.databinding.ViewDataBinding.class;
+    Class binding() default void.class;
 }
