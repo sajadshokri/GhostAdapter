@@ -24,12 +24,12 @@ ext {
 
 }
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    compileSdkVersion 28
+    buildToolsVersion "28.0.3"
 
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 25
+        targetSdkVersion 28
         versionCode 1
         versionName "0.1 ALPHA"
     }
@@ -39,17 +39,14 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-}
-ext {
-    supportLibVersion = '25.3.1'
+
+    dataBinding {
+        enabled = true
+    }
 }
 
 dependencies {
-    compile "com.android.support:recyclerview-v7:$supportLibVersion"
+    implementation 'androidx.recyclerview:recyclerview:1.1.0-alpha03'
 }
 apply from: 'installv1.gradle'
 apply from: 'bintrayv1.gradle'
-
-//apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
-//apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'
-
