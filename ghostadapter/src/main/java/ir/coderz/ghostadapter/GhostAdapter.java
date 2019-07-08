@@ -171,7 +171,7 @@ public class GhostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
      * @param <T>
      */
     public <T> void addItems(@NonNull List<T> items) {
-        int start = this.items.size() - 1;
+        int start = this.items.size();
         this.items.addAll(items);
         for (T item : items) {
             readAnnotations(item.getClass());
